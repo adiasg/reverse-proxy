@@ -1,0 +1,7 @@
+{
+    "listen_addr": "0.0.0.0",
+    "listen_port": 10998,
+    "max_conn": 100,
+    "target_addr_file": "serverList.txt",
+    "buffer_size": 8192
+}

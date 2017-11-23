@@ -7,8 +7,9 @@ import requests
 def delim():
     print("-----------------------------------------------------------")
 
-def synchronous_requests(urls):
-    responses = [ requests.get(url) for url in urls ]
+def synchronous_requests(urls, responses):
+    for i in range(len(urls)):
+        responses[i] = requests.get(urls[i])
     return responses
 
 def get(url):
@@ -25,9 +26,10 @@ async def asynchronous_requests(urls, data):
         data[iter] = await futures[iter]
     return data
 
-urls = [ 'http://localhost:10998' for x in range(17) ]
+urls = [ 'http://localhost:10998/2' for x in range(1) ]
+responses = [ 0 for x in range(len(urls))]
 start = timeit.default_timer()
-responses = synchronous_requests(urls)
+responses = synchronous_requests(urls, responses)
 end = timeit.default_timer()
 print("Time elapsed:",end-start)
 for iter in range(len(responses)):
@@ -35,9 +37,9 @@ for iter in range(len(responses)):
 
 delim()
 
-start = timeit.default_timer()
 loop = asyncio.get_event_loop()
 responses = []
+start = timeit.default_timer()
 responses = loop.run_until_complete(asynchronous_requests(urls, responses))
 end = timeit.default_timer()
 print("Time elapsed:",end-start)

@@ -1,6 +1,21 @@
 from flask import Flask, render_template, request
 import os
 import socket
+import hashlib
+
+def hash(message):
+    sha = hashlib.sha256()
+    sha.update(message.encode('utf-8'))
+    return sha.hexdigest()
+
+def mine(message, difficulty):
+    prefix = '0'*difficulty
+    nonce = 0
+    h = hash(message+str(nonce))
+    while(not( ( h ).startswith(prefix) )):
+        nonce += 1
+        h = hash(message+str(nonce))
+    return {'message': message, 'nonce': nonce, 'hash': h}
 
 app = Flask(__name__)
 
@@ -9,14 +24,9 @@ def hello():
     # return str(request.headers)
     return render_template('index.html', hostname=socket.gethostname())
 
-@app.route("/<int:x>")
-def fact(x):
-    if x<0:
-        return "Invalid number"
-    fact = 1
-    for i in range(1,x+1):
-        fact = fact*i
-    return str(fact)
+@app.route("/<int:difficulty>")
+def test(difficulty):
+    return str(mine("This is the message string.", difficulty))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
